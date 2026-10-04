@@ -25,7 +25,11 @@ jobs:
 
     - name: Build with ndk-build
       run: |
+        echo "查看目录结构:"
+        ls -la src_repo/
+        echo "进入hal目录:"
         cd src_repo/hal
+        echo "开始编译:"
         ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk NDK_APPLICATION_MK=Application.mk
 
     - name: Upload Artifact
