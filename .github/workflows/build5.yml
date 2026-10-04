@@ -1,0 +1,38 @@
+name: Build MiColor Service (Final)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Unzip Source Code
+      run: |
+        unzip mource.zip -d extracted_code
+
+    - name: Set up Android NDK r27
+      uses: nttld/setup-ndk@v1
+      id: setup-ndk
+      with:
+        ndk-version: r27
+        add-to-path: true
+
+    - name: Build with ndk-build
+      run: |
+        cd extracted_code
+        ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk NDK_APPLICATION_MK=Application.mk
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: micolor-service
+        path: |
+          extracted_code/libs/arm64-v8a/vendor.xiaomi.hardware.displayfeature_aidl-service
+          extracted_code/vendor.xiaomi.hardware.displayfeature_aidl-service.rc
+          extracted_code/vendor.xiaomi.hardware.displayfeature_aidl-service.xml
